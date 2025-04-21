@@ -16,8 +16,15 @@ return new class extends Migration
             $table->string('image');
             $table->string('title');
             $table->text('content');
-            $table->bigInteger('price');
+            $table->decimal('price', 10, 2);
+            $table->boolean('is_preorder')->default(false);
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
+                ->nullOnDelete(); // Laravel 11+ uses nullOnDelete instead of manual onDelete('set null')
         });
     }
 

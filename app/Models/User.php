@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject; // Tambahkan ini
+use Illuminate\Support\Facades\Hash; // Untuk password hashing
 
 class User extends Authenticatable implements JWTSubject // Implement JWTSubject
 {
@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
         'name',
         'email',
         'password',
+        'role', // Menambahkan role
     ];
 
     /**
@@ -64,5 +65,41 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * Mutator untuk hashing password secara otomatis saat menyimpan ke database
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
+     * Validasi untuk user saat registrasi
+     *
+     * @param array $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    public static function validate(array $data)
+    {
+        return validator($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
+
+    /**
+     * Akses kontrol berdasarkan role user
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
