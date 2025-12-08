@@ -73,10 +73,10 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
      * @param string $value
      * @return void
      */
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
+    // public function setPasswordAttribute($value)
+    // {
+    //     $this->attributes['password'] = Hash::make($value);
+    // }
 
     /**
      * Validasi untuk user saat registrasi
