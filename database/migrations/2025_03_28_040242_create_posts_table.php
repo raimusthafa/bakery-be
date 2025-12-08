@@ -19,12 +19,18 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->boolean('is_preorder')->default(false);
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('product_stock_id')->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
                 ->nullOnDelete(); // Laravel 11+ uses nullOnDelete instead of manual onDelete('set null')
+
+            $table->foreign('product_stock_id')
+                ->references('id')
+                ->on('product_stocks')
+                ->nullOnDelete();
         });
     }
 
